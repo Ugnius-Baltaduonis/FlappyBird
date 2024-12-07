@@ -1,25 +1,20 @@
 ﻿class Display
 {
-    private readonly char[,] emptyMap = new char[,] {
-        { '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', },
-        { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', },
-        { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', },
-        { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', },
-        { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', },
-        { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', },
-        { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', },
-        { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', },
-        { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', },
-        { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', },
-        { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', },
-        { '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', },
-        };
+    private char[,] emptyMap;
+    private char[,] currentMap;
     private readonly int mapsizeY;
     private readonly int mapsizeX;
-    private char[,] currentMap;
 
+    public Display() { emptyMap = new char[0,0]; currentMap = new char[0, 0]; }
     public Display(int mapsizeX, int mapsizeY)
     {
+        emptyMap = new char[mapsizeY, mapsizeX];
+        for (int i = 0; i < mapsizeY; i++) for (int j = 0; j < mapsizeX; j++) emptyMap[i,j] = ' ';
+        for (int i = 0; i < mapsizeX; i++)
+        {
+            emptyMap[0, i] = '#';
+            emptyMap[mapsizeY - 1, i] = '#';
+        }
         currentMap = (char[,])emptyMap.Clone();
         this.mapsizeX  = mapsizeX;
         this.mapsizeY = mapsizeY;
@@ -34,16 +29,24 @@
         }
     }
     public void Clear() => currentMap = (char[,])emptyMap.Clone();
-    public void AddBird(Bird bird) 
+
+    public void FullClear()
+    {
+        currentMap = (char[,])emptyMap.Clone();
+        Console.Clear();
+    }
+    public void AddObject(Bird bird)
     {
         if (!IsInBounds(bird.GetX(), bird.GetY())) bird.SetPos(bird.GetX(), 0);
         currentMap[bird.GetY(), bird.GetX()] = bird.GetSprite();
     }
-    public void AddPillar(Pillar pillar)
+
+    public void AddObject(Pillar pillar)
     {
-        if (!IsInBounds(pillar.GetPos(),0)) return;
-        for(int i = 1;  i < mapsizeY; i++) {
-            if (i < pillar.GetHolepos() - 1 || i > pillar.GetHolepos() + 1) currentMap[i, pillar.GetPos()] = '#';
+        if (!IsInBounds(pillar.GetPos(), 0)) return;
+        for (int i = 1; i < mapsizeY; i++)
+        {
+            if (i < pillar.GetHolepos() - Math.Floor(pillar.GetHolesize()/2f) || i >= pillar.GetHolepos() + Math.Ceiling(pillar.GetHolesize() / 2f)) currentMap[i, pillar.GetPos()] = '#';
         }
     }
     public bool IsObstacle(int x, int y)

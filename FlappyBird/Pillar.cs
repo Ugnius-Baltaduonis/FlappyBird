@@ -9,7 +9,15 @@
         Random random = new Random();
         this.pos = pos;
         holepos = random.Next(3, mapsizeY-3);
-        holesize = 5;
+        holesize = 3;
+    }
+    public Pillar(int pos, int mapsizeY, int holesize)
+    {
+        Random random = new Random();
+        if (pos < 0) pos = 0;
+        this.pos = pos;
+        holepos = random.Next(3, mapsizeY - 3);
+        this.holesize = holesize;
     }
 
     public int GetPos() => pos;
