@@ -1,0 +1,4 @@
+﻿interface IFlappable
+{
+    void Flap();
+}
