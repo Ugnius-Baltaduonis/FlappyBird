@@ -29,10 +29,9 @@
         }
     }
     public void Clear() => currentMap = (char[,])emptyMap.Clone();
-
     public void FullClear()
     {
-        currentMap = (char[,])emptyMap.Clone();
+        this.Clear();
         Console.Clear();
     }
     public void AddObject(Bird bird)

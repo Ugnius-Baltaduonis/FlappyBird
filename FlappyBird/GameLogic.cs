@@ -100,4 +100,5 @@ class GameLogic
         display.DrawMap();
         display.DisplayScore(score);
     }
+    public List<Pillar> GetPillars() { return pillars; }
 }
